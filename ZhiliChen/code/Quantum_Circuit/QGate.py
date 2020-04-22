@@ -61,43 +61,60 @@ class ParameterizedGate:
         self.PGate = lin.expm(-0.5j * self.para * self.Gate)
 
 
+def Rzyz(i, n):
+    gate_list = []
+    gate_list.append(ParameterizedGate(i, Z, n))
+    gate_list.append(ParameterizedGate(i, Y, n))
+    gate_list.append(ParameterizedGate(i, Z, n))
+    return gate_list
+
+
+
 '''arbitrary 2-qubits gate, 15 parameterized gate and 3 CNOT gate'''
-class TwoQbitGate:
-    def __init__(self, i, j, n):
-        self.tq_gate_list = []
-        self.tq_gate_list.append(ParameterizedGate(i, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(i, Y, n))
-        self.tq_gate_list.append(ParameterizedGate(i, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Y, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Z, n))
-        self.tq_gate_list.append(CNOT(j, i, n))
-        self.tq_gate_list.append(ParameterizedGate(i, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Y, n))
-        self.tq_gate_list.append(CNOT(i, j, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Y, n))
-        self.tq_gate_list.append(CNOT(j, i, n))
-        self.tq_gate_list.append(ParameterizedGate(i, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(i, Y, n))
-        self.tq_gate_list.append(ParameterizedGate(i, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Z, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Y, n))
-        self.tq_gate_list.append(ParameterizedGate(j, Z, n))
+def two_qubit_gate(i, j, n):
+    tq_gate_list = []
+    tq_gate_list.extend(Rzyz(i, n))
+    tq_gate_list.extend(Rzyz(j, n))
+    tq_gate_list.append(CNOT(j, i, n))
+    tq_gate_list.append(ParameterizedGate(i, Z, n))
+    tq_gate_list.append(ParameterizedGate(j, Y, n))
+    tq_gate_list.append(CNOT(i, j, n))
+    tq_gate_list.append(ParameterizedGate(j, Y, n))
+    tq_gate_list.append(CNOT(j, i, n))
+    tq_gate_list.extend(Rzyz(i, n))
+    tq_gate_list.extend(Rzyz(j, n))
+    return tq_gate_list
 
 
 '''Layer constituted by 2-qubits gate'''
-class Layer:
-    def __init__(self, n):
-        counter = 1
-        self.gate_list = []
-        while counter < n:
-            self.gate_list.extend(TwoQbitGate(counter, counter+1, n).tq_gate_list)
-            counter += 2
-        counter = 2
-        while counter < n:
-            self.gate_list.extend(TwoQbitGate(counter, counter+1, n).tq_gate_list)
-            counter += 2
+def layer(n):
+    counter = 1
+    gate_list = []
+    while counter < n:
+        gate_list.extend(two_qubit_gate(counter, counter+1, n))
+        counter += 2
+    counter = 2
+    while counter < n:
+        gate_list.extend(two_qubit_gate(counter, counter+1, n))
+        counter += 2
+    return gate_list
 
+
+def nlayer(n, depth):
+    gate_list = []
+    for i in range(0, depth):
+        gate_list.extend(layer(n))
+    return gate_list
+
+
+def get_E0(i, n):
+    E0 = np.array([[1.0]])
+    for j in range(1, n + 1):
+        if j != i:
+            E0 = np.kron(E0, I)
+        else:
+            E0 = np.kron(E0, P0)
+    return E0
 
 
 
