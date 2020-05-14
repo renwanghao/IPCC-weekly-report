@@ -116,6 +116,7 @@ def get_E0(i, n):
             E0 = np.kron(E0, P0)
     return E0
 
+
 def get_Pauli_gate(i, n, G):
     gate = np.array([[1.0]])
     counter = 1
@@ -127,12 +128,34 @@ def get_Pauli_gate(i, n, G):
         counter += 1
     return gate
 
+
 def getX(i, n):
     return get_Pauli_gate(i, n, X)
+
 
 def getY(i, n):
     return get_Pauli_gate(i, n, Y)
 
+
 def getZ(i, n):
     return get_Pauli_gate(i, n, Z)
+
+
+def get_Pauli_list(n, G):
+    list = []
+    for i in range(0, n):
+        list.append(get_Pauli_gate(i + 1, n, G))
+    return list
+
+
+def get_X_list(n):
+    return get_Pauli_list(n, X)
+
+
+def get_Y_list(n):
+    return get_Pauli_list(n, Y)
+
+
+def get_Z_list(n):
+    return get_Pauli_list(n, Z)
 

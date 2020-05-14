@@ -50,7 +50,7 @@ class QCircuitSimulator:
         self.d = 2 ** (n + 1) # dimension of hilbert space
         self.register = QR.QRegister(n, 1) # register used to save state of the whole qubits
         # get projector E0
-        self.E0 = QG.get_E0(n+1, n+1)
+        self.E0 = QG.get_E0(n + 1, n + 1)
         # create layer instances(count is equal to TDepth), extend list by these layer instance
         self.target_list = QG.nlayer(n, TDepth)
         # get list of generate circuit
@@ -58,6 +58,9 @@ class QCircuitSimulator:
         # get list of discriminate circuit
         self.dgate_list = QG.nlayer(n+1, DDepth)
         self.noise_type = noise
+        self.Xlist = QG.get_X_list(n + 1)
+        self.Ylist = QG.get_Y_list(n + 1)
+        self.Zlist = QG.get_Z_list(n + 1)
 
     '''initial state of entire registers'''
     def register_initial(self):
@@ -139,9 +142,9 @@ class QCircuitSimulator:
     '''change phase to get derivative, return derivative of ith generate gate'''
     def generator_derivative(self, i):
         p = self.ggate_list[i].para
-        self.ggate_list[i].change_para(np.pi/2+p) # change phase to np.pi/2+p
+        self.ggate_list[i].change_para(np.pi / 2 + p) # change phase to np.pi/2+p
         ancprob0 = self.observeg() # trace(probability of ancillary qubit state) of part1
-        self.ggate_list[i].change_para(p-np.pi/2)
+        self.ggate_list[i].change_para(p - np.pi / 2)
         ancprob1 = self.observeg() # trace of part2
         self.ggate_list[i].change_para(p) # change phase to original p
         der = -0.5 * 0.5 * (ancprob0 - ancprob1).real # trace1 substract trace2 getting derivative
@@ -150,10 +153,10 @@ class QCircuitSimulator:
     '''return derivative of ith discrimnate gate'''
     def discriminator_derivative(self, i):
         p = self.dgate_list[i].para
-        self.dgate_list[i].change_para(np.pi/2+p)
+        self.dgate_list[i].change_para(np.pi / 2 + p)
         ancprob0 = self.observeg()
         ancprob2 = self.observet()
-        self.dgate_list[i].change_para(p-np.pi/2)
+        self.dgate_list[i].change_para(p - np.pi / 2)
         ancprob1 = self.observeg()
         ancprob3 = self.observet()
         self.dgate_list[i].change_para(p)
@@ -206,31 +209,31 @@ class QCircuitSimulator:
 
     def bit_flip_noise(self, n):
         dmat = self.register.density
-        for i in range(1, n + 1):
-            x = QG.getX(i, self.qnum)
+        for i in range(0, n):
+            x = self.Xlist[i]
             dmat = Pnoise * np.matmul(x, np.matmul(dmat, x)) + (1 - Pnoise) * dmat
         self.register.density = dmat
 
     def phase_flip_noise(self, n):
         dmat = self.register.density
-        for i in range(1, n + 1):
-            x = QG.getZ(i, self.qnum)
+        for i in range(0, n):
+            x = self.Zlist[i]
             dmat = Pnoise * np.matmul(x, np.matmul(dmat, x)) + (1 - Pnoise) * dmat
         self.register.density = dmat
 
     def bit_phase_flip_noise(self, n):
         dmat = self.register.density
-        for i in range(1, n + 1):
-            x = QG.getY(i, self.qnum)
+        for i in range(0, n):
+            x = self.Ylist[i]
             dmat = Pnoise * np.matmul(x, np.matmul(dmat, x)) + (1 - Pnoise) * dmat
         self.register.density = dmat
 
     def depolarize_noise(self, n):
         dmat = self.register.density
-        for i in range(1, n + 1):
-            x = QG.getX(i, self.qnum)
-            y = QG.getY(i, self.qnum)
-            z = QG.getZ(i, self.qnum)
+        for i in range(0, n):
+            x = self.Xlist[i]
+            y = self.Ylist[i]
+            z = self.Zlist[i]
             dmat = (1 - 0.75 * Pnoise) * dmat + (Pnoise / 4) * (np.matmul(x, np.matmul(dmat, x)) + np.matmul(y, np.matmul(dmat, y)) + np.matmul(z, np.matmul(dmat, z)))
         self.register.density = dmat
 

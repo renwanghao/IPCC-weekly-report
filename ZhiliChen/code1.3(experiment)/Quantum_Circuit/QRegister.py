@@ -24,7 +24,7 @@ class QRegister1:
 
     def change_state(self, circuit):
         self.state = np.matmul(circuit, self.state)
-        self.density = np.matmul(self.state, self.state.T.conj())
+        self.density = np.matmul(circuit, np.matmul(self.density, circuit.T.conj()))
 
 
 class QRegister:
@@ -44,12 +44,12 @@ class QRegister:
 
     def change_state(self, circuit):
         self.state = np.matmul(circuit, self.state)
-        self.density = np.matmul(self.state, self.state.T.conj())
+        self.density = np.matmul(circuit, np.matmul(self.density, circuit.T.conj()))
 
     def change_main_state(self, circuit):
         self.main_register.change_state(circuit)
         self.state = np.kron(self.main_register.state, self.anc_register.state) # kron with ancillary qubit state to get state of entire qubits
-        self.density = np.matmul(self.state, self.state.T.conj())
+        self.density = np.kron(self.main_register.density, self.anc_register.density)
 
     '''initial to 0 state'''
     def initial(self):
