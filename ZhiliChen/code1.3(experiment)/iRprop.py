@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import linalg as lin
 from matplotlib import pyplot as plt
+from Quantum_Circuit import AdversarialQCircuit as QC
 
 dec = 0.5
 inc = 1.2
@@ -78,10 +79,12 @@ def iteration(qcircuit, m):
     # plt.savefig('./fidelity.png')
     # plt.show()
 
+# cir = QC.QCircuitSimulator(1, 1, 1, 2, "Bit_Flip")
+# iteration(cir, 200)
 
 # def simulate():
 #     cir = QC.QCircuitSimulator(1, 1, 1, 2, "Depolarizing_Channel")
-#     # noise_name = Bit_Flip,Phase_Flip, Bit_Phase_Flip, Depolarizing_Channel,
+#     # noise_name = Bit_Flip, Phase_Flip, Bit_Phase_Flip, Depolarizing_Channel,
 #     iteration(cir)
 #     a = cir.get_tar_state()
 #     print(a)

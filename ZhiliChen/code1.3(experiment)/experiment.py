@@ -6,6 +6,9 @@ import pickle
 from iRprop import iteration
 
 
+Epochs = 100
+
+
 def save_figure(noise_type, i, d_loss, g_loss, fidelity, m):
     path_name = "./experiment/3bit/" + str(i) + "/" + noise_type + "/"
 
@@ -58,31 +61,31 @@ for i in range(1, 11):
     save_cir("init", i, cir)
 
     c = copy.deepcopy(cir)
-    fidelity, g_loss, d_loss = iteration(c, 100)
+    fidelity, g_loss, d_loss = iteration(c, Epochs)
     save_cir("without_noise", i, c)
-    save_figure("without_noise", i, d_loss, g_loss, fidelity, 100)
+    save_figure("without_noise", i, d_loss, g_loss, fidelity, Epochs)
 
     c = copy.deepcopy(cir)
     c.noise_type = "Bit_Flip"
-    fidelity, g_loss, d_loss = iteration(c, 100)
+    fidelity, g_loss, d_loss = iteration(c, Epochs)
     save_cir("bit_flip", i, c)
-    save_figure("bit_flip", i, d_loss, g_loss, fidelity, 100)
+    save_figure("bit_flip", i, d_loss, g_loss, fidelity, Epochs)
 
     c = copy.deepcopy(cir)
     c.noise_type = "Phase_Flip"
-    fidelity, g_loss, d_loss = iteration(c, 100)
+    fidelity, g_loss, d_loss = iteration(c, Epochs)
     save_cir("phase_flip", i, c)
-    save_figure("phase_flip", i, d_loss, g_loss, fidelity, 100)
+    save_figure("phase_flip", i, d_loss, g_loss, fidelity, Epochs)
 
     c = copy.deepcopy(cir)
     c.noise_type = "Bit_Phase_Flip"
-    fidelity, g_loss, d_loss = iteration(c, 100)
+    fidelity, g_loss, d_loss = iteration(c, Epochs)
     save_cir("bit_phase_flip", i, c)
-    save_figure("bit_phase_flip", i, d_loss, g_loss, fidelity, 100)
+    save_figure("bit_phase_flip", i, d_loss, g_loss, fidelity, Epochs)
     
     c = copy.deepcopy(cir)
     c.noise_type = "Depolarizing_Channel"
-    fidelity, g_loss, d_loss = iteration(c, 100)
+    fidelity, g_loss, d_loss = iteration(c, Epochs)
     save_cir("depolarizing_channel", i, c)
-    save_figure("depolarizing_channel", i, d_loss, g_loss, fidelity, 100)
+    save_figure("depolarizing_channel", i, d_loss, g_loss, fidelity, Epochs)
 
