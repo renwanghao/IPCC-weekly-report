@@ -25,24 +25,24 @@ def save_figure(noise_type, i, d_loss, g_loss, fidelity, m):
     np.save(file_name, a)
 
     x = np.arange(0, m, 1)
-    plt.figure()
     plt.xlabel("iteration")
     plt.ylabel("d_loss")
     plt.plot(x, d_loss, 'd')
     file_name = path_name + "d_loss.png"
     plt.savefig(file_name)
-    plt.figure()
+    plt.close()
     plt.xlabel("iteration")
     plt.ylabel("g_loss")
     plt.plot(x, g_loss, 'd')
     file_name = path_name + "g_loss.png"
     plt.savefig(file_name)
-    plt.figure()
+    plt.close()
     plt.xlabel("iteration")
     plt.ylabel("fidelity")
     plt.plot(x, fidelity, 'd')
     file_name = path_name + "fidelity.png"
     plt.savefig(file_name)
+    plt.close()
 
 
 def save_cir(type, i, cir):
