@@ -69,7 +69,7 @@ def iteration(qcircuit, m):
             qcircuit.change_discriminator_para(dis_para)
             dis_der1 = dis_der2[:]
         y3.append(loss(qcircuit))
-        print(fidelity(qcircuit))
+        # print(fidelity(qcircuit))
         y1.append(fidelity(qcircuit))
     return y1, y2, y3
     # x = np.arange(0, m, 1)
